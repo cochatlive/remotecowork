@@ -1,0 +1,9 @@
+[submodule "remotecowork.nodeserver"]
+	path = remotecowork.nodeserver
+	url = git@github.com:remotecowork/remotecowork.nodeserver.git
+[submodule "remotecowork.gateway"]
+	path = remotecowork.gateway
+	url = git@github.com:remotecowork/remotecowork.gateway.git
+[submodule "remotecowork.ui"]
+	path = remotecowork.ui
+	url = git@github.com:remotecowork/remotecowork.ui.git
