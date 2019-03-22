@@ -1,0 +1,8 @@
+FROM node:8
+
+COPY nodeserver/package*.json ./
+COPY nodeserver/src ./src
+
+RUN npm install
+
+CMD [ "node", "src/index.js" ]

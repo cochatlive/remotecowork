@@ -1,0 +1,51 @@
+version: '3'
+
+
+networks:
+  default:
+    external:
+      name: jimber_cowork
+
+      # docker network create -d macvlan --subnet=192.168.1.0/24 --gateway=192.168.1.1  -o parent=wlp2s0 pub_net
+      # sudo ip link set wlp2s0 promisc on
+services:
+  cowork_janus_gateway:
+    network_mode: host
+    container_name: cowork_janus_gateway
+    image: jimber/cowork_janus_gateway:latest
+    build:
+      context: ./
+      dockerfile: ./Dockerfile.janus-gateway
+    volumes:
+      - /opt/cowork/janus-gateway/certs:/opt/janus/share/janus/certs
+    ports:
+      - "7088:7088"
+      - "7889:7889"
+      - "8088:8088"
+      - "8089:8089"
+      - "8188:8989"
+      - "10000-10200:10000-10200/udp"
+
+  cowork_nodeserver:
+    container_name: cowork_nodeserver
+    image: jimber/cowork_nodeserver
+    build:
+      context: ./
+      dockerfile: ./Dockerfile.nodeserver
+    volumes:
+      - /opt/cowork/nodeserver/certs:/certificates
+    ports:
+      - 3000:3000/tcp
+
+  cowork_ui:
+    image: jimber/cowork_ui
+    container_name: cowork_ui
+    build:
+      context: ./
+      dockerfile: ./Dockerfile.ui
+    volumes:
+      - /opt/cowork/ui/certs:/certificates
+      - /opt/cowork/ui/configs:/usr/share/nginx/html/static
+    ports:
+      - 80:80/tcp
+      - 443:443/tcp
