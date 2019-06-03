@@ -28,7 +28,7 @@ services:
 
   cowork_nodeserver:
     container_name: cowork_nodeserver
-    image: jimber/cowork_nodeserver
+    image: jimber/cowork_nodeserver:staging
     build:
       context: ./
       dockerfile: ./Dockerfile.nodeserver
@@ -38,7 +38,7 @@ services:
       - 3000:3000/tcp
 
   cowork_ui:
-    image: jimber/cowork_ui
+    image: jimber/cowork_ui:staging
     container_name: cowork_ui
     build:
       context: ./
