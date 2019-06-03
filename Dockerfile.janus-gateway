@@ -63,15 +63,14 @@ RUN cd / \
     && ./configure --prefix=/usr \
     && make && sudo make install
 
-COPY janus-gateway/. /janus-gateway/
-COPY .git/ /.git
-WORKDIR /janus-gateway/
+COPY . /fuck
+WORKDIR /fuck/remotecowork.gateway/
 RUN ./autogen.sh
 RUN ./configure --prefix=/opt/janus --disable-unix-sockets --disable-rabbitmq --disable-mqtt --disable-plugin-audiobridge --disable-data-channels --disable-plugin-echotest --disable-plugin-recordplay --disable-plugin-sip --disable-plugin-sipre --disable-plugin-nosip --disable-plugin-textroom --disable-plugin-videocall --disable-plugin-videoroom --disable-plugin-voicemail
 RUN make CFLAGS='-std=c99'
 RUN make install
 
-RUN cd /janus-gateway \
+RUN cd /fuck/remotecowork.gateway/ \
     && git clone https://github.com/JohnKarel/janus-rtpforward-plugin.git \
     && cd janus-rtpforward-plugin \
     && ./bootstrap \
@@ -112,9 +111,9 @@ RUN apt-get install -y \
     wget \
     nginx
 
-COPY janus-gateway/plugins /opt/janus/lib/janus/plugins
-COPY --from=builder /janus-gateway/plugins /opt/janus/lib/janus/plugins
-COPY --from=builder /janus-gateway/transports /opt/janus/lib/janus/transports
+COPY remotecowork.gateway/plugins /opt/janus/lib/janus/plugins
+COPY --from=builder /fuck/remotecowork.gateway/plugins /opt/janus/lib/janus/plugins
+COPY --from=builder /fuck/remotecowork.gateway/transports /opt/janus/lib/janus/transports
 RUN cp -r /opt/janus/lib/janus/plugins/.libs/*.s* /opt/janus/lib/janus/plugins/
 RUN cp -r /opt/janus/lib/janus/transports/.libs/*.s* /opt/janus/lib/janus/transports/
 
@@ -130,23 +129,23 @@ RUN cd / \
 
 RUN mkdir -p /opt/janus/bin/
 
-COPY --from=builder /janus-gateway/janus /opt/janus/bin/
+COPY --from=builder /fuck/remotecowork.gateway/janus /opt/janus/bin/
 
 RUN mkdir libs
 COPY --from=builder /usrsctp libs/usrsctp
 COPY --from=builder /libsrtp-2.1.0 libs/libsrtp-2.1.0
 #COPY --from=builder /usr/lib/cmake/libwebsockets /usr/lib/cmake/libwebsockets
 COPY --from=builder /libnice libs/libnice
-COPY janus-gateway/certs/* /opt/janus/share/janus/localcerts/
+COPY remotecowork.gateway/certs/* /opt/janus/share/janus/localcerts/
 RUN cd libs/usrsctp && make install
 RUN cd libs/libsrtp-2.1.0 && make install
 RUN cd libs/libnice && make install
 
-COPY janus-gateway/configs/* /opt/janus/etc/janus/
-COPY janus-gateway/html/* /janus-gateway/html/
+COPY remotecowork.gateway/configs/* /opt/janus/etc/janus/
+COPY remotecowork.gateway/html/* /janus-gateway/html/
 
-COPY janus-gateway/nginx.conf /etc/nginx/nginx.conf
-COPY janus-gateway/testfile.txt /opt/nginx/testfile.txt
+COPY remotecowork.gateway/nginx.conf /etc/nginx/nginx.conf
+COPY remotecowork.gateway/testfile.txt /opt/nginx/testfile.txt
 
 # COPY conf/stun.cfg /opt/janus/stun.cfg
 CMD  service nginx start && /opt/janus/bin/janus
