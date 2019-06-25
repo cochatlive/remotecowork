@@ -41,3 +41,14 @@ pull-all:
 	docker-compose pull cowork_janus_gateway
 	docker-compose pull cowork_nodeserver
 	docker-compose pull cowork_ui
+
+run_dev:
+	gnome-terminal --window -e 'tmux new-session\
+	; split-window -h \
+	; select-pane -t 0 \
+	; send-keys "cd remotecowork.ui && npm run serve:jelle" ENTER \
+	; select-pane -t 1 \
+	; send-keys "cd remotecowork.nodeserver && npm run serve" ENTER'
+
+run_dev_janus:
+	docker-compose up -d cowork_janus_gateway 
