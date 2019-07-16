@@ -5,6 +5,7 @@ build-nodeserver:
 	docker-compose build cowork_nodeserver
 
 build-ui:
+	cd remotecowork.ui && npm run build && cd ..
 	docker-compose build cowork_ui
 
 start-janus:
@@ -52,3 +53,9 @@ run_dev:
 
 run_dev_janus:
 	docker-compose up -d cowork_janus_gateway 
+
+build_push_staging: build-ui build-nodeserver
+	docker tag jimber/cowork_nodeserver:latest  jimber/cowork_nodeserver:staging
+	docker push jimber/cowork_nodeserver:staging
+	docker tag jimber/cowork_ui:latest  jimber/cowork_ui:staging
+	docker push jimber/cowork_ui:staging
